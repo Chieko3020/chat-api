@@ -24,7 +24,7 @@ const SENSITIVE_PATTERNS = [
   /\brm\s*-rf\b|\brm\s.*[/]|sudo\s+rm|chmod\s+777|wget.*\|.*sh/i,
   /\bdd\s+if=|mkfs\.|:\(\)\s*{\s*:\s*\|:&\s*}/i,
   // 凭证/密钥/敏感文件
-  /\bapi[_-]?key\b|\bsecret\b|\btoken\b|\bpassword\b|\bcredential\b|\bapi\b|\bkey\b/i,
+  /\bapi[_-]?key\b|\bsecret\b|\btoken\b|\bpassword|\bcredential\b|\bapi\b|\bkey\b/i,
   /\.env\b|\/etc\/passwd|\/etc\/shadow|config\.yaml/i,
   // 远程下载
   /\bcurl\b.*\bhttps?:\/\/|wget\s+https?:\/\//i,
