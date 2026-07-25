@@ -15,6 +15,19 @@ const SENSITIVE_PATTERNS = [
   /porn/i, /sex/i, /fuck/i, /nude/i, /hentai/i,
   /hack/i, /exploit/i, /payload/i, /injection/i,
   /<script/i, /javascript:/i, /onerror=/i, /onload=/i,
+  // 提示注入
+  /忽略.*指令|ignore.*instruction|忘记.*规则|forget.*rule/i,
+  /system\s*prompt|系统提示|系统指令|你的设定|你的规则/i,
+  /角色扮演.*其他|扮演.*角色|你现在是|pretend.*you.*are/i,
+  /输出.*指令|输出.*提示词|repeat.*prompt|print.*instruction/i,
+  // 危险命令
+  /\brm\s*-rf\b|\brm\s.*[/]|sudo\s+rm|chmod\s+777|wget.*\|.*sh/i,
+  /\bdd\s+if=|mkfs\.|:\(\)\s*{\s*:\s*\|:&\s*}/i,
+  // 凭证/密钥/敏感文件
+  /\bapi[_-]?key\b|\bsecret\b|\btoken\b|\bpassword\b|\bcredential\b|\bapi\b|\bkey\b/i,
+  /\.env\b|\/etc\/passwd|\/etc\/shadow|config\.yaml/i,
+  // 远程下载
+  /\bcurl\b.*\bhttps?:\/\/|wget\s+https?:\/\//i,
 ];
 
 /**
