@@ -1,0 +1,26 @@
+[Unit]
+Description=Chieko3020 Blog Chat API (DeepSeek)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/chat-api
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=10
+
+# 环境变量
+EnvironmentFile=-/home/ubuntu/chat-api/.env
+Environment=NODE_ENV=production
+
+# 安全加固
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/ubuntu/chat-api
+ReadOnlyPaths=/home/ubuntu/chat-api/.env
+
+[Install]
+WantedBy=multi-user.target
