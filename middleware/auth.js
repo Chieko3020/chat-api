@@ -10,7 +10,7 @@ function authMiddleware(req, res, next) {
   const token =
     authHeader && authHeader.startsWith("Bearer ")
       ? authHeader.slice(7)
-      : req.query.token;
+      : (req.query && req.query.token);
 
   if (!token) {
     return res.status(401).json({ error: "missing_token", message: "请提供访问令牌" });
