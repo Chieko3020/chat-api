@@ -17,7 +17,8 @@ function authMiddleware(req, res, next) {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    // 显式限定算法，避免算法混淆类攻击
+    const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ["HS256"] });
 
     // IP 绑定验证
     const clientIP = req.ip || req.connection.remoteAddress;

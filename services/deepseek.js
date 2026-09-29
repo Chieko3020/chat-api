@@ -2,6 +2,8 @@ const OpenAI = require("openai");
 const fs = require("fs");
 const path = require("path");
 
+const moderation = require("./moderation");
+
 const client = new OpenAI({
   apiKey: process.env.DEEPSEEK_API_KEY,
   baseURL: process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com/v1",
@@ -91,7 +93,10 @@ async function chat(message, history = [], model = "march7th") {
     } catch (e) { /* fail silent */ }
 
     const sanitized = sanitizeOutput(reply);
-    return { reply: sanitized, tokens };
+    // 输出侧语义审核：DeepSeek 无 moderation 端点，用一次 flash 判别调用实现。
+    // fail-open —— 审核不可用时不阻塞正常聊天。
+    const gated = await moderation.gate(sanitized);
+    return { reply: gated, tokens };
   } catch (err) {
     console.error("[deepseek] API error:", err.message);
     if (err.status === 400 && err.message?.includes("content")) {

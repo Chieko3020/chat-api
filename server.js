@@ -5,6 +5,7 @@ const rateLimit = require("express-rate-limit");
 
 const { authMiddleware, generateToken } = require("./middleware/auth");
 const {
+  isAllowedHost,
   refererMiddleware,
   inputFilterMiddleware,
   securityHeadersMiddleware,
@@ -19,17 +20,21 @@ const PORT = process.env.PORT || 3002;
 app.use((req, res, next) => {
   const allowedOrigins = (process.env.ALLOWED_ORIGINS || "chieko3020.xyz")
     .split(",")
-    .map((s) => s.trim());
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   const origin = req.headers.origin || "";
-  const isAllowed = allowedOrigins.some((d) => origin.includes(d));
 
-  if (isAllowed || !origin) {
-    res.set("Access-Control-Allow-Origin", origin || "*");
+  // 严格 host 匹配（原先的 origin.includes(d) 子串匹配可被
+  // https://chieko3020.xyz.evil.com 这类来源绕过）
+  if (isAllowedHost(origin, allowedOrigins)) {
+    res.set("Access-Control-Allow-Origin", origin);
+    res.set("Vary", "Origin");
     res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.set("Access-Control-Max-Age", "86400");
   }
+  // 未匹配时不回 ACAO 头：等价于浏览器侧拒绝，且不再对无 Origin 请求回 "*"
 
   if (req.method === "OPTIONS") {
     return res.status(204).end();
